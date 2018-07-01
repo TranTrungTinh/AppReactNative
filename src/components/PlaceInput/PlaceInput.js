@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
   },
   placeInput: {
     width: '70%',
-    borderColor: 'black',
-    borderWidth: 1
+    // borderColor: 'black',
+    // borderWidth: 1
   },
   placeButton: {
     width: '30%'

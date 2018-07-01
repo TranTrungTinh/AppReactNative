@@ -7,12 +7,12 @@ const placeList = (props) => (
   <FlatList 
     style={styles.listContainer}
     data={props.places} 
-    keyExtractor={(item, index) => index.toString()}
+    keyExtractor={item => item.key.toString()}
     renderItem={({ item }) => (
       <ListItem 
         placeName={item.name}
         placeImage={item.image}
-        onItemPress={() => props.onDeleteItemHandler(item.key)}
+        onItemPress={() => props.onSelectedItemHandler(item.key)}
       /> 
     )}
   />
