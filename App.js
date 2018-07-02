@@ -1,54 +1,32 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { connect } from 'react-redux';
+import * as actionCreators from './src/store/actions/index';
 
 import PlaceList from './src/components/PlaceList/PlaceList';
 import PlaceInput from './src/components/PlaceInput/PlaceInput';
-import placeImage from './src/assets/a.jpeg';
 import PlaceDetail from './src/components/PlaceDetail/PlaceDetail';
 
-export default class App extends Component {
+class App extends Component {
 
-  state = {
-    playName: '',
-    places: [],
-    selectedPlace: null
-  }
-
-  placeNameChangeHandler = value => {
-    this.setState({ playName: value });
-  }
-
-  placeSubmitHandler = () => {
-    if( this.state.playName.trim() === "" ) return;
-    const item = { 
-      key: Math.random(), 
-      name: this.state.playName, 
-      image: placeImage 
-    };
-    this.setState(preState => ({ 
-      places: [...preState.places, item] 
-    }));
+  placeSubmitHandler = placeName => {
+    this.props.addPlace(placeName);
   }
 
   placeSelectedHandler = key => {
-    this.setState( preState => ({
-      selectedPlace: preState.places.find(place => place.key === key)
-    }));
+    this.props.onSelectedPlace(key);
   }
 
   placeDeleteHandler = () => {
-    this.setState( preState => ({
-      places: preState.places.filter(place => place.key !== preState.selectedPlace.key),
-      selectedPlace: null
-    }));
+    this.props.deletePlace();
   }
 
   modelCloseHandler = () => {
-    this.setState({ selectedPlace: null });
+    this.props.deSelectedPlace();
   }
 
   render() {
-    const { places, playName, selectedPlace } = this.state;
+    const { places, selectedPlace } = this.props;
     return (
       <View style={styles.container}>
         <PlaceDetail 
@@ -57,9 +35,7 @@ export default class App extends Component {
           onCloseModel={this.modelCloseHandler}
         />
         <PlaceInput 
-          playName={playName}
-          onPlaceSubmitHandler={this.placeSubmitHandler.bind(this)}
-          onPlaceNameChangeHandler={this.placeNameChangeHandler.bind(this)}
+          onPlaceSubmitHandler={this.placeSubmitHandler}
         />
         <PlaceList 
           places={places}
@@ -80,3 +56,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   }
 });
+
+const mapStateToProps = state => ({
+  places: state.places.places,
+  selectedPlace: state.places.selectedPlace
+});
+
+export default connect(mapStateToProps, actionCreators)(App);
